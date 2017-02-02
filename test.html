@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<style type="text/css">
+h1{
+     font-size:20px;
+}
+th{
+     text-align: left;
+}
+.price,.sale-price,.release{
+     text-align:left;
+}
+</style>
+</head>
+<body style="margin:10px;">
+    <h1>商品一覧</h1>
+    <table id="book" class="table">
+         <tr><th>題名</th><th>単価</th><th>発売日</th><th>&nbsp;</th></tr>
+    </table>
+
+<h1>カート</h1>
+<table id="cart" class="table">
+    <tr><th>題名</th><th>単価</th><th>数量</th></tr>
+</table>
+<div class="pull-right">
+    合計金額:<span id="amount" style="font-size:1.5em">0</span>円
+</div>
+<button id="buy" class="btn btn-primary btn-block">購入する</button>
+
+<h1>購入データ</h1>
+<pre id="data"></pre>
+</body>
+
+<script>
+    var books = [
+                  {'id': '1','title': '3日でわかるjQuery', 'price':'2980', 'release':'2016/04/02', 'num': 0},
+                  {'id': '2','title': 'jQuery実践入門', 'price':'3400', 'release':'2015/10/25', 'num': 0},
+                  {'id': '3','title': 'jQuery500の技', 'price':'1980', 'release':'2016/03/16', 'num': 0},
+                  {'id': '4','title': '実践jQuery', 'price':'2980', 'release':'2016/03/16', 'num': 0},
+                  {'id': '5','title': 'プログラミングjQuery', 'price':'2980', 'release':'2016/04/16', 'num': 0}
+　　　　　　　];
+	// 总额
+	var total = document.getElementById('amount');
+	// 商品列表
+	var bookTable = document.getElementById('book');
+	// 购物车
+	var cartTable = document.getElementById('cart');
+	// 把 books里的数据加入商品列表
+	for(var i=0; i<books.length; i++) {
+		// 第 i 个数据
+		var item = books[i];
+		// 插入一行
+		var row = bookTable.insertRow();
+		// 加入前三个数据
+		row.insertCell().innerHTML = item.id;
+		row.insertCell().innerHTML = item.title;
+		row.insertCell().innerHTML = item.price;
+		// 最后一个数据，先在这一行加入一个cell
+		var operationCell = row.insertCell();
+		// 创建 "+"按钮， 并设置参数
+		// 这里用的是BOOTSTRAP的按钮语法
+		// <button type="button" >+</button>
+		var addButton = document.createElement("Button");
+		addButton.type = 'button';
+		addButton.innerHTML = '+';
+		// 设置按钮的value，方便传入下面的on click function
+		addButton.value = item.id;
+		// 当这个按钮被按下，把 数据的id传入，执行addIntoCart function
+		addButton.onclick =  function () {
+            addIntoCart(this.value);
+        };
+		//把按钮加入这个cell
+		operationCell.appendChild(addButton);
+	}
+
+	function addIntoCart(id)
+	{
+		//先在books中找到相应数据
+		var item = books[id-1];
+		// 增加总额
+		total.innerHTML=parseInt(total.innerHTML)+parseInt(item.price);
+		// 更新购物车列表
+		// 增加它在books中的计数
+		item.num++;
+		// 如果这个商品只有一件，即刚刚才被加入
+		if(item.num==1)
+		{
+			// 在购物车中新加一行
+			var row = cartTable.insertRow();
+			// 加入id, 商品名和数量
+			row.insertCell().innerHTML = item.id;
+			row.insertCell().innerHTML = item.title;
+			row.insertCell().innerHTML = item.num;
+			// 设置这行的id，方便我们之后调用
+			row.id = id;
+		}
+		// 否则这个商品已经在购物车中，只需要增加数量
+		else {
+			//找到这个商品的那行
+			var row = cartTable.rows.namedItem(id);
+			//找到数量那个cell
+			var num = row.cells.item(2);
+			// 更新数量
+			num.innerHTML = item.num;
+		}
+	}
+</script>
+</html>

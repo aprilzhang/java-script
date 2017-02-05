@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -14,12 +14,17 @@ th{
 .price,.sale-price,.release{
      text-align:left;
 }
+.cart-add{
+    /* 在这边写加入购物车按钮的样式*/
+    color:red;
+}
 </style>
 </head>
 <body style="margin:10px;">
     <h1>商品一覧</h1>
     <table id="book" class="table">
          <tr><th>題名</th><th>単価</th><th>発売日</th><th>&nbsp;</th></tr>
+
     </table>
 
 <h1>カート</h1>
@@ -43,8 +48,6 @@ th{
                   {'id': '4','title': '実践jQuery', 'price':'2980', 'release':'2016/03/16', 'num': 0},
                   {'id': '5','title': 'プログラミングjQuery', 'price':'2980', 'release':'2016/04/16', 'num': 0}
 　　　　　　　];
-	// 总额
-	var total = document.getElementById('amount');
 	// 商品列表
 	var bookTable = document.getElementById('book');
 	// 购物车
@@ -56,33 +59,31 @@ th{
 		// 插入一行
 		var row = bookTable.insertRow();
 		// 加入前三个数据
-		row.insertCell().innerHTML = item.id;
 		row.insertCell().innerHTML = item.title;
 		row.insertCell().innerHTML = item.price;
+		row.insertCell().innerHTML = item.release;
 		// 最后一个数据，先在这一行加入一个cell
-		var operationCell = row.insertCell();
-		// 创建 "+"按钮， 并设置参数
+		// 创建 "カートに入れる"按钮， 并设置参数
 		// 这里用的是BOOTSTRAP的按钮语法
-		// <button type="button" >+</button>
-		var addButton = document.createElement("Button");
-		addButton.type = 'button';
-		addButton.innerHTML = '+';
-		// 设置按钮的value，方便传入下面的on click function
-		addButton.value = item.id;
-		// 当这个按钮被按下，把 数据的id传入，执行addIntoCart function
-		addButton.onclick =  function () {
-            addIntoCart(this.value);
-        };
-		//把按钮加入这个cell
-		operationCell.appendChild(addButton);
+		row.insertCell().innerHTML = "<button class=\"btn btn-default btn-xs cart-add\" bookid=\""+item.id+"\">カートに入れる</button>";
 	}
+  // 当加入购物车按钮被按下，把bookid传入，执行addIntoCart function
+  $("button.cart-add").on('click',function()
+  {
+        addIntoCart($(this).attr('bookid'));
+  });
+
+  $('#buy').on('click',function()
+  {
+       $('#data').text(createJsonString());
+  });
 
 	function addIntoCart(id)
 	{
 		//先在books中找到相应数据
 		var item = books[id-1];
 		// 增加总额
-		total.innerHTML=parseInt(total.innerHTML)+parseInt(item.price);
+		$('#amount').text(parseInt($('#amount').text())+parseInt(item.price));
 		// 更新购物车列表
 		// 增加它在books中的计数
 		item.num++;
@@ -107,6 +108,23 @@ th{
 			// 更新数量
 			num.innerHTML = item.num;
 		}
-	}
+  }
+
+  function createJsonString()
+  {
+      //从这里我终于试着用了一下jquery来写。。。有没有什么更好的写法 js也可以的
+      //题目要求点击购入按钮时，在最下方的框里显示JSON形式的总金额和id，数量 。 形式如下{"amount":"总金额","data":[{"id":"1","num":1},{"id":"2","num":1}，。。。，]}
+      var data=[];//商品id和数量
+      for(var i=0;i<books.length;i++){
+          if(books[i].num!==0)
+          {
+            var tmp={"id": books[i].id, "num":books[i].num};
+            data.push(tmp);
+          }
+      }
+      var amount=$('#amount').text();//总金额
+      var jsData={"amount":parseInt(amount),"data":data};
+      return JSON.stringify(jsData);
+   }
 </script>
 </html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+body {background:#fff;color:#000}
+
+table {width:80%;}
+th, td {border:1px solid gray}
+.blue{
+	color:blue;	
+}
+</style>
+</head>
+<body>   
+
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Visible columns
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+      <li><input type="checkbox" onclick='show_hide_column(this,1);' checked>number</li>
+      <li><input type="checkbox" onclick='show_hide_column(this,2);' checked>name</li>
+      <li><input type="checkbox" onclick='show_hide_column(this,3);' checked>birth</li>
+    </ul>
+  </div>
+<hr/>
+<div>
+  <table id="result" class="draggable">
+      <tr>
+        <th>number</th>
+        <th>name</th>
+        <th>birth</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>A</td>
+        <td>01/01</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>B</td>
+        <td>01/02</td>
+      </tr>
+  </table>
+</div>
+</body>
+
+<script>
+function show_hide_column(cb, index) {
+	$("#result").find("td,th").filter(":nth-child(" + index + ")").toggle();
+}
+</script>
+</html>

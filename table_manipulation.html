@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+ <!--jquery ui library-->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+ <!--multiselect library-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+ <!--dragtable library-->
+  <script src="https://rawgit.com/akottr/dragtable/master/jquery.dragtable.js"></script>
+  <link rel="stylesheet" href="https://rawgit.com/akottr/dragtable/master/dragtable.css">
+<style>
+body {background:#fff;color:#000}
+
+table {width:80%;}
+th, td {border:1px solid gray}
+.blue{
+	color:blue;	
+}
+</style>
+</head>
+<body>   
+<select size="5" name="visible columns" multiple="multiple" id="visibleColumns">
+  <option selected="selected">number</option>
+  <option selected="selected">name</option>
+  <option selected="selected">birth</option>
+</select>
+<hr/>
+<div>
+  <table id="result" class="draggable">
+    <thead>
+      <tr>
+        <th>number</th>
+        <th>name</th>
+        <th>birth</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>A</td>
+        <td>01/01</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>B</td>
+        <td>01/02</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+
+<script>
+$(function() {
+  $('#result').dragtable();
+});
+
+$(function () { 
+    $('#visibleColumns').multiselect({ 
+        buttonText: function(options, select) {
+            if (options.length === 0) {
+                return 'None visible';
+            }
+            else if (options.length === select[0].length) {
+                return 'All visible ('+select[0].length+')';
+            }
+            else {
+                var labels = [];
+                options.each(function() {
+                    labels.push($(this).val());
+                });
+                return labels.join(', ') + ' '+(options.length==1?'is':'are') +' visible';
+            }
+        },
+        onChange: function(element, checked) {
+        	index = element.index()+1;
+            $('td:nth-child('+index+'),th:nth-child('+index+')').toggle();
+        }
+    });
+});
+</script>
+</html>

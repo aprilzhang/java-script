@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<style>
+table td {
+	border: 1px solid black;
+}
+table th {
+	border: 1px solid black;
+}
+</style>
+</head>
+<body>
+
+<table id="test">
+<th>Kind</th>
+<th>Detail</th>
+<th>Balance</th>
+<th>Warehouse</th>
+</table>
+
+</body>
+<script>
+//我们实习的时候用一个叫alasql的东西，把Excel里的数据转换成这种形式
+var stocks = [
+{"stock": 
+	{"id":1, "item":1, "whouse":1, "limit":400, "balance":630}, 
+ "whouse":
+ 	{"id":1, "name":"Tokyo"}, 
+ "item":{"id":1, "kind":1, "detail":"Chile Atlantic Salmon"},
+ "kind":{"id":1, "text":"salmon"}
+},
+{"stock": 
+	{"id":3, "item":3, "whouse":3, "limit":500, "balance":430}, 
+ "whouse":
+ 	{"id":3, "name":"Fukuoka"}, 
+ "item":{"id":3, "kind":2, "detail":"Australia tuna"},
+ "kind":{"id":2, "text":"tuna"}
+ },
+ {"stock": 
+	{"id":2, "item":2, "whouse":2, "limit":300, "balance":530}, 
+ "whouse":
+ 	{"id":2, "name":"Osaka"}, 
+ "item":{"id":2, "kind":1, "detail":"Chile Trout Salmon"},
+ "kind":{"id":1, "text":"salmon"}
+ },
+{"stock": 
+	{"id":4, "item":4, "whouse":1, "limit":200, "balance":230}, 
+ "whouse":
+ 	{"id":1, "name":"Tokyo"}, 
+ "item":{"id":4, "kind":2, "detail":"Australia tuna"},
+ "kind":{"id":2, "text":"tuna"}
+ }
+]
+//用下面这个方法(stackflow上找的，其实不怎么明白)把stocks按照kind分组之后，Google Chrome上用console.log(stocks)，结果是一个分好组的Object，但是却取不出object里面的数据 研究不出来了汗
+for(i=0;i<stocks.length;i++){
+	var a = stocks[i];
+	result = stocks.reduce(function(r,a){
+		r[a.kind.text]=r[a.kind.text]||[];
+		r[a.kind.text].push(a);
+		return r
+		}, Object.create(null));
+}
+//当你log那个object的时候，你应该看到了object里面有"salmon","tuna"的properties. 根据
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries
+//查到Object.entries()这个方法可以把properties转化成为array,从而在我们这个例子中比较容易取出数据。
+//你可以用log的方法来查看一下这样转化之后的数据结构。
+stocks = Object.entries(result);
+
+//把stocks里的数据取出，添加到table里表示出来
+var output = document.getElementById("test");
+for(i=0;i<stocks.length;i++)
+{
+	var kind = stocks[i][0];    
+	for(j=0;j<stocks[i].length;j++)
+    {
+	  var rowObject = stocks[i][1][j];
+      var row = output.insertRow();
+      row.insertCell().innerHTML = kind;
+      row.insertCell().innerHTML = rowObject.item.detail;
+      row.insertCell().innerHTML = rowObject.stock.balance;
+      row.insertCell().innerHTML = rowObject.whouse.name;
+    }
+}
+</script>
+</html>
